@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>
+        AI Credential Verification System
+    </title>
+
+    <style>
+
+        body {
+
+            font-family: Arial, sans-serif;
+
+            background: #f4f7fc;
+
+            margin: 0;
+
+            padding: 0;
+        }
+
+        .container {
+
+            width: 80%;
+
+            margin: auto;
+
+            margin-top: 30px;
+        }
+
+        h1 {
+
+            text-align: center;
+
+            color: #1e3a8a;
+
+            margin-bottom: 30px;
+        }
+
+        .upload-box {
+
+            background: white;
+
+            padding: 20px;
+
+            border-radius: 10px;
+
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+
+            margin-bottom: 30px;
+        }
+
+        button {
+
+            background: #2563eb;
+
+            color: white;
+
+            border: none;
+
+            padding: 10px 20px;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+
+            font-size: 16px;
+        }
+
+        button:hover {
+
+            background: #1d4ed8;
+        }
+
+        .card {
+
+            background: white;
+
+            padding: 20px;
+
+            margin-bottom: 20px;
+
+            border-radius: 10px;
+
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        }
+
+        .approved {
+
+            color: green;
+
+            font-weight: bold;
+        }
+
+        .rejected {
+
+            color: red;
+
+            font-weight: bold;
+        }
+
+        .pending {
+
+            color: orange;
+
+            font-weight: bold;
+        }
+
+        img {
+
+            margin-top: 10px;
+
+            border: 1px solid #ccc;
+
+            padding: 5px;
+
+            border-radius: 5px;
+        }
+
+        a {
+
+            text-decoration: none;
+
+            color: #2563eb;
+
+            font-weight: bold;
+        }
+
+        a:hover {
+
+            text-decoration: underline;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>
+        AI Credential Verification System
+    </h1>
+
+    <div class="upload-box">
+
+        <form method="POST"
+              enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <button type="submit">
+                Upload Certificate
+            </button>
+
+        </form>
+
+    </div>
+
+    {% for c in credentials %}
+
+    <div class="card">
+
+        <p>
+            <b>Student:</b>
+            {{ c.student_name }}
+        </p>
+
+        <p>
+            <b>Certificate:</b>
+            {{ c.certificate_name }}
+        </p>
+
+        <p>
+            <b>Status:</b>
+
+            {% if c.status == "Approved" %}
+
+                <span class="approved">
+                    Approved
+                </span>
+
+            {% elif c.status == "Rejected" %}
+
+                <span class="rejected">
+                    Rejected
+                </span>
+
+            {% else %}
+
+                <span class="pending">
+                    Pending
+                </span>
+
+            {% endif %}
+        </p>
+
+        {% if c.qr_code %}
+
+        <p>
+            <b>QR Code:</b>
+        </p>
+
+        <img src="{{ c.qr_code.url }}"
+             width="150">
+
+        {% endif %}
+
+        {% if c.certificate_file %}
+
+        <p>
+
+            <a href="{{ c.certificate_file.url }}">
+
+                Download Certificate
+
+            </a>
+
+        </p>
+
+        {% endif %}
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+</body>
+
+</html>
